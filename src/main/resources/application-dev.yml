@@ -2,3 +2,16 @@
 #development version of configuration
 server:
   port: 8083
+
+# databasae connection
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth_app
+    username: root
+    password: root2006
+
+    #jpa and hibernate configration
+  jpa:
+    hibernate:
+      ddl-auto: update
+
