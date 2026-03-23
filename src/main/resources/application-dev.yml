@@ -10,8 +10,24 @@ spring:
     username: root
     password: root2006
 
-    #jpa and hibernate configration
+    #hikari:
+    #  pool-name: HihariCP
+    #  maximum-pool-size: 5
+    #  connection-timeout: 10000
+    #  idle-timeout: 600000
+    #  max-lifetime: 1800000
+    #  validation-timeout: 1800000
+    #  leak-detection-threshold: 0
+    #  initialization-fail-timeout: -1
+
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySDL5InnoDBDialect
+        format-sql: true
+    show-sql: true
 
+
+#jpa and hibernate configration
