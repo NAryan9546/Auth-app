@@ -1,33 +1,19 @@
-
-#development version of configuration
 server:
   port: 8083
-
-# database connection
+#database connection
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/auth_app
     username: root
     password: aryan@2006
 
-    #hikari:
-    #  pool-name: HihariCP
-    #  maximum-pool-size: 5
-    #  connection-timeout: 10000
-    #  idle-timeout: 600000
-    #  max-lifetime: 1800000
-    #  validation-timeout: 1800000
-    #  leak-detection-threshold: 0
-    #  initialization-fail-timeout: -1
-
   jpa:
+    show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create  # Changed from update to force table creation logs
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-        format-sql: true
-    show-sql: true
-
-
-#jpa and hibernate configration
+        format_sql: true
+        highlight_sql: true
+        # This line ensures the DDL (Create statements) actually shows up in logs
+        use_sql_comments: true
