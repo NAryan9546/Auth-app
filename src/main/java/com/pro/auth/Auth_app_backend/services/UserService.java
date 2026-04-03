@@ -6,13 +6,13 @@ public interface UserService {
     // create user
     UserDto createUser(UserDto userDto);
     //get user by email
-    UserDto getUserbyemail(String email);
+    UserDto getUserByEmail(String email);
     //updateuser
     UserDto updateuser(UserDto userDto,String userid);
     //deleteuser
     void deleteuser(String userid);
     //get user by id
-    UserDto getuserbyid(String userid);
+    UserDto getUserById(String userid);
     //getalluser
     Iterable<UserDto> getallusers();
 

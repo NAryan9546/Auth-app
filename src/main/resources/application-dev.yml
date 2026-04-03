@@ -10,7 +10,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create  # Changed from update to force table creation logs
+      ddl-auto: update  # Changed from update to force table creation logs
     properties:
       hibernate:
         format_sql: true

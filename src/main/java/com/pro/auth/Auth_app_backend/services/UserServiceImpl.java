@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto getUserbyemail(String email) {
+    public UserDto getUserByEmail(String email) {
         return null;
     }
 
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto getuserbyid(String userid) {
+    public UserDto getUserById(String userid) {
         return null;
     }
 
