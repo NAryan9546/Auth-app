@@ -3,10 +3,12 @@ package com.pro.auth.Auth_app_backend.services;
 import com.pro.auth.Auth_app_backend.dtos.UserDto;
 import com.pro.auth.Auth_app_backend.entities.Provider;
 import com.pro.auth.Auth_app_backend.entities.User;
+import com.pro.auth.Auth_app_backend.exception.ResourceNotFoundException;
 import com.pro.auth.Auth_app_backend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +35,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDto getUserByEmail(String email) {
-        return null;
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Override
@@ -52,6 +56,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public Iterable<UserDto> getallusers() {
         return userRepository.findAll()
                 .stream()
