@@ -4,11 +4,14 @@ import com.pro.auth.Auth_app_backend.dtos.UserDto;
 import com.pro.auth.Auth_app_backend.entities.Provider;
 import com.pro.auth.Auth_app_backend.entities.User;
 import com.pro.auth.Auth_app_backend.exception.ResourceNotFoundException;
+import com.pro.auth.Auth_app_backend.helpers.UserHelper;
 import com.pro.auth.Auth_app_backend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +50,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void deleteuser(String userid) {
+        UUID uId= UserHelper.parseUUID(userid);
+        User user = userRepository.findById(uId).orElseThrow(() -> new ResourceNotFoundException("User not found with given id"));
 
     }
 
