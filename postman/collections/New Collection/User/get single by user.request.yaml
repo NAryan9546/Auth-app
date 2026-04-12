@@ -1,0 +1,22 @@
+$kind: http-request
+name: get single by user
+url: localhost:8083/api/v1/users
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \r
+
+    \  \"email\": \"aryan@example.com\",\r
+
+    \  \"name\": \"Aryan Ahlawat\",\r
+
+    \  \"password\": \"password123\",\r
+
+    \  \"image\": \"https://example.com/profile.jpg\",\r
+
+    \  \"enabled\": true\r
+
+    }"
+order: 2000
