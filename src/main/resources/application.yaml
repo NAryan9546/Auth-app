@@ -3,6 +3,11 @@ spring:
     name: Auth-app-backend
   profiles:
     active: dev
+  security:
+    # Remove the user and password lines below
+    basic:
+      enabled: true
+
 server:
   port: 8082
 
