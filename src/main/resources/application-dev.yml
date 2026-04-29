@@ -17,3 +17,18 @@ spring:
         highlight_sql: true
         # This line ensures the DDL (Create statements) actually shows up in logs
         use_sql_comments: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+security:
+  jwt:
+    secret: "${JWT_SECRET:saiofal;vkasfbehwqpofhjasfhofjaswfpojasfvbafop[hfifonfo[shjfwfjjfslajfsah]}"
+    issuer: "${JWT_ISSUER:api.substring.com}"
+    access-tl-seconds: ${JWT_ACCESS_TTL_SECONDS:3000}
+    refresh-tl-seconds: ${JWT_REFRESH_TTL_SECONDS:80000}
+    refresh-token-cookie-name: ${JWT_REFRESH_COOKIE_NAME:refreshToken}
+    cookie-secure: ${JWT_COOKIE_SECURE:true}
+    cookie-http-only: ${JWT_COOKIE_HTTP_ONLY:true}
+    cookie-same-site: ${JWT_COOKIE_SAME_SITE:lax}
