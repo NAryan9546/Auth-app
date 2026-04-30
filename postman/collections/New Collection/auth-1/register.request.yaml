@@ -1,6 +1,6 @@
 $kind: http-request
 name: register
-url: localhost:8083/api/v1/users
+url: localhost:8083/api/v1/auth/register
 method: POST
 body:
   type: json
@@ -8,7 +8,7 @@ body:
 
     \  \r
 
-    \  \"email\": \"aryan@example.com\",\r
+    \  \"email\": \"test_user_99@example.com\",\r
 
     \  \"name\": \"Aryan Ahlawat\",\r
 

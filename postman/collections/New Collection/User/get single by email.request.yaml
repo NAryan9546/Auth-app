@@ -1,7 +1,7 @@
 $kind: http-request
 name: get single by email
 url: localhost:8083/api/v1/users
-method: POST
+method: GET
 body:
   type: json
   content: "{\r

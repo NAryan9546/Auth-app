@@ -25,7 +25,7 @@ public class JwtService {
     private final String issuer;
 
     public JwtService(
-            @Value("${security.Jwt.secret") String secret,
+            @Value("${security.jwt.secret}") String secret,
             @Value("${security.jwt.access-tl-seconds}") long accessTtlSeconds,
             @Value("${security.jwt.refresh-tl-seconds}") long refreshTtlSeconds,
             @Value("${security.jwt.issuer}") String issuer
@@ -102,5 +102,14 @@ public class JwtService {
         return parse(token).getPayload().getId();
     }
 
+    public List<String> getRoles(String token) {
+        Claims c = parse(token).getPayload();
+        return (List<String >) c.get("coles");
+    }
+
+        public String getEmail(String token) {
+            Claims c = parse(token).getPayload();
+            return (String) c.get("email");
+        }
 
 }
