@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -49,7 +52,7 @@ public class SecurityConfig {
                     e.printStackTrace();
                     response.setStatus(401);
                     response.setContentType("application/json");
-                    String message="Unauthorized access"+e.getMessage();
+                    String message=e.getMessage();
                     Map<String,String> errorMap=Map.of("message",message,"statuscode",Integer.toString(401));
                     var objectMapper= new ObjectMapper();
                     response.getWriter().write(objectMapper.writeValueAsString(errorMap));
@@ -61,15 +64,11 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-//    @Bean
-//    public UserDetailsService users(){
-//        User.UserBuilder userBuilder = User.withDefaultPasswordEncoder();
-//
-//        UserDetails user1 = userBuilder.username("Aryan").password("tyu").roles("ADMIN").build();
-//        UserDetails user2 = userBuilder.username("Rohan").password("xyz").roles("ADMIN").build();
-//        UserDetails user3 = userBuilder.username("Ayan").password("").roles("USER").build();
-//        return new InMemoryUserDetailsManager(user1,user2,user3);
-//
-//    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration){
+        return configuration.getAuthenticationManager();
+    }
+
 
 }

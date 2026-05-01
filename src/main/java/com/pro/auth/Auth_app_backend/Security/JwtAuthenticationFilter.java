@@ -36,6 +36,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return request.getRequestURI().startsWith("/api/v1/auth");
+    }
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -44,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (header != null) {
             log.info("Authorization header: {}", header);
         }
-        if(header!=null || header.startsWith("Bearer")){
+        if(header!=null && header.startsWith("Bearer ")){
 
             //token extract and validate then authentication create and then set into security context
             String token = header.substring(7);
@@ -101,6 +107,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request,response);
+
+
+
 
     }
 }
