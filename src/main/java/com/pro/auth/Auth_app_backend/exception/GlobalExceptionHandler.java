@@ -3,6 +3,9 @@ package com.pro.auth.Auth_app_backend.exception;
 import com.pro.auth.Auth_app_backend.dtos.ApiError;
 import com.pro.auth.Auth_app_backend.dtos.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,10 +15,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import java.util.logging.Logger;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -26,6 +29,7 @@ public class GlobalExceptionHandler {
             DisabledException.class
     })
     public ResponseEntity<ApiError> handleAuthException(Exception e, HttpServletRequest request) {
+        log.info("Exception | :{}",e.getClass().getName());
         var apiError = ApiError.of(
                 HttpStatus.BAD_REQUEST.value(),
                 "Bad Request",

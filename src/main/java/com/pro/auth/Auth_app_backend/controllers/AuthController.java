@@ -58,7 +58,7 @@ public class AuthController {
             return authenticationManager.authenticate( new UsernamePasswordAuthenticationToken( loginRequest.email( ), loginRequest.password( ) ) );
 
         } catch (Exception e) {
-            throw new BadCredentialsException( "Invalid Username or password" );
+            throw new BadCredentialsException( "Invalid Username or password !!" );
         }
     }
 

@@ -1,11 +1,13 @@
 package com.pro.auth.Auth_app_backend.config;
 
 import com.pro.auth.Auth_app_backend.Security.JwtAuthenticationFilter;
+import com.pro.auth.Auth_app_backend.dtos.ApiError;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -49,13 +51,26 @@ public class SecurityConfig {
                 )
 
                 .exceptionHandling(configurer -> configurer.authenticationEntryPoint((request, response, e) -> {
-                    e.printStackTrace();
+                    //Error Message
+//                    e.printStackTrace();
                     response.setStatus(401);
                     response.setContentType("application/json");
                     String message=e.getMessage();
-                    Map<String,String> errorMap=Map.of("message",message,"statuscode",Integer.toString(401));
+                    String error = (String) request.getAttribute("error");
+                    if (error!=null){
+                        message=error;
+                    }
+
+                    //Map<String,Object> errorMap=Map.of("message",message,"statuscode",401);
+                    var apiError = ApiError.of(
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "UNAUTHORIZED ACCESS",
+                            message,
+                            request.getRequestURI(),
+                            true
+                    );
                     var objectMapper= new ObjectMapper();
-                    response.getWriter().write(objectMapper.writeValueAsString(errorMap));
+                    response.getWriter().write(objectMapper.writeValueAsString(apiError));
                 }))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
