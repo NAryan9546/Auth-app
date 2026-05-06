@@ -38,74 +38,65 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        // Skips filtering for login and register endpoints
         return request.getRequestURI().startsWith("/api/v1/auth");
     }
 
-
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-        String header= request.getHeader("Authorization");
-        if (header != null) {
-            log.info("Authorization header: {}", header);
+        String header = request.getHeader("Authorization");
+
+        if (header == null || !header.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
-        if(header!=null && header.startsWith("Bearer ")){
 
-            //token extract and validate then authentication create and then set into security context
-            String token = header.substring(7);
-            try{
+        String token = header.substring(7);
+        try {
+            // 1. Parse and validate the token signature
+            Jws<Claims> parse = jwtService.parse(token);
+            Claims payload = parse.getPayload();
 
-                Jws<Claims> parse =jwtService.parse(token);
-                Claims payload = parse.getPayload();
-
-                //check for access token
-                if(!jwtService.isAccessToken(token)){
-                    filterChain.doFilter(request,response);
-                    return;
-                }
-
-                String userId = payload.getSubject();
-                UUID userUuid = UserHelper.parseUUID(userId);
-
-                userRepository.findById(userUuid)
-                        .ifPresent(user->{
-
-                                    //check for user enable or not
-                                    if(user.isEnabled()) {
-                                        List<GrantedAuthority> authorities = user.getRoles () == null ? List.of () : user.getRoles ().stream ()
-                                                .map (role -> new SimpleGrantedAuthority (role.getName ())).collect (Collectors.toList ());
-                                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken (
-                                                user.getEmail (),
-                                                null,
-                                                authorities
-                                        );
-
-                                        authentication.setDetails (new WebAuthenticationDetailsSource ().buildDetails (request));
-                                        //final line :to set the authentication to security context
-                                        if (SecurityContextHolder.getContext ().getAuthentication () == null)
-                                            SecurityContextHolder.getContext ().setAuthentication (authentication);
-                                    }
-
-
-
-                        });
-
-
-            }catch (ExpiredJwtException e){
-                request.setAttribute("error","Token Expired");
-               // e.printStackTrace();
-
-            } catch (Exception e){
-                request.setAttribute("error"," Invalid Token");
-                //e.printStackTrace();
-
+            // 2. Ensure it is an Access Token, not a Refresh Token
+            if (!jwtService.isAccessToken(token)) {
+                log.warn("Refresh token used as Access token");
+                filterChain.doFilter(request, response);
+                return;
             }
+
+            String userId = payload.getSubject();
+            UUID userUuid = UserHelper.parseUUID(userId);
+
+            // 3. Find user and set Authentication
+            userRepository.findById(userUuid).ifPresent(user -> {
+                if (user.isEnabled()) {
+                    List<SimpleGrantedAuthority> authorities = user.getRoles() == null ? List.of() :
+                            user.getRoles().stream()
+                                    .map(role -> new SimpleGrantedAuthority(role.getName()))
+                                    .collect(Collectors.toList());
+
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            user.getEmail(),
+                            null,
+                            authorities
+                    );
+
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            });
+
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: {}", e.getMessage());
+            request.setAttribute("error", "Token Expired");
+            // Important: In a production app, you might want to send a 401 response here
+        } catch (Exception e) {
+            log.error("JWT token validation failed: {}", e.getMessage());
+            request.setAttribute("error", "Invalid Token");
         }
-        filterChain.doFilter(request,response);
 
-
-
-
+        filterChain.doFilter(request, response);
     }
 }

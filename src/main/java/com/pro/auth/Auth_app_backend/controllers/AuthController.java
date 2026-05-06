@@ -1,5 +1,6 @@
 package com.pro.auth.Auth_app_backend.controllers;
 
+import com.pro.auth.Auth_app_backend.Security.CookieService;
 import com.pro.auth.Auth_app_backend.Security.JwtService;
 import com.pro.auth.Auth_app_backend.dtos.LoginRequest;
 import com.pro.auth.Auth_app_backend.dtos.TokenResponse;
@@ -9,6 +10,7 @@ import com.pro.auth.Auth_app_backend.entities.User;
 import com.pro.auth.Auth_app_backend.repositories.RefreshTokenRepository;
 import com.pro.auth.Auth_app_backend.repositories.UserRepository;
 import com.pro.auth.Auth_app_backend.services.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -38,11 +40,13 @@ public class AuthController {
     private final ModelMapper modelMapper;
 
     private final JwtService jwtService;
+    private final CookieService cookieService;
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(
 
-            @RequestBody LoginRequest loginRequest
+            @RequestBody LoginRequest loginRequest,
+            HttpServletResponse response
     ) {
         //authenticate
         Authentication authenticate = authenticate( loginRequest );
@@ -65,6 +69,12 @@ public class AuthController {
         // access Token--generate
         String accessToken = jwtService.generateAccessToken( user );
         String refreshToken = jwtService.generateRefreshToken(user, refreshTokenA.getJti());
+
+        //use cookie service to attach refresh token in cookie
+
+        cookieService.attachRefreshCookie(response,refreshToken, (int)jwtService.getRefreshTtlseconds());
+        cookieService.addNoStoreHeaders(response);
+
         TokenResponse tokenResponse = TokenResponse.of( accessToken, refreshToken, jwtService.getAccessTtlSeconds( ), modelMapper.map( user, UserDto.class ) );
         return ResponseEntity.ok( tokenResponse );
 
