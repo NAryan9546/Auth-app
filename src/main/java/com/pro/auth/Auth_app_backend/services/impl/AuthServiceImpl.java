@@ -1,5 +1,6 @@
 package com.pro.auth.Auth_app_backend.services.impl;
 
+import com.pro.auth.Auth_app_backend.dtos.TokenResponse;
 import com.pro.auth.Auth_app_backend.dtos.UserDto;
 import com.pro.auth.Auth_app_backend.services.AuthService;
 import com.pro.auth.Auth_app_backend.services.UserService;
@@ -14,6 +15,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
+
     @Override
     public UserDto registerUser(UserDto userDto){
 
@@ -22,5 +24,11 @@ public class AuthServiceImpl implements AuthService {
 
         return userDto1;
     }
+    @Override
+    public TokenResponse refreshToken(String refreshToken) {
+
+        return null;
+    }
+
 
 }
