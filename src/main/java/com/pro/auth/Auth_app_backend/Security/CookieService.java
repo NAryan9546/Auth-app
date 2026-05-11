@@ -24,11 +24,11 @@ public class CookieService {
 
 
     public CookieService(
-            @Value("${security.jwt.refresh-token-cookie-name}") String refreshTokenCookieName,
-            @Value("${security.jwt.cookie-http-only}")Boolean cookieHttpOnly,
-            @Value("${security.jwt.cookie-secure}")Boolean cookieSecure,
-            @Value("${security.jwt.cookie-same-site}")String cookieSameSite,
-            @Value("${security.jwt.cookie-domain}")String cookieDomain) {
+            @Value("${security.jwt.refresh-token-cookie-name:refreshToken}") String refreshTokenCookieName,
+            @Value("${security.jwt.cookie-http-only:true}") Boolean cookieHttpOnly,
+            @Value("${security.jwt.cookie-secure:false}") Boolean cookieSecure,
+            @Value("${security.jwt.cookie-same-site:Lax}") String cookieSameSite,
+            @Value("${security.jwt.cookie-domain:localhost}") String cookieDomain) {
         this.refreshTokenCookieName = refreshTokenCookieName;
         this.cookieHttpOnly = cookieHttpOnly;
         this.cookieSecure = cookieSecure;

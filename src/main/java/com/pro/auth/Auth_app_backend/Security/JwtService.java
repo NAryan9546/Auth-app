@@ -30,8 +30,8 @@ public class JwtService {
 
     public JwtService(
             @Value("${security.jwt.secret}") String secret,
-            @Value("${security.jwt.access-tl-seconds}") long accessTtlSeconds,
-            @Value("${security.jwt.refresh-tl-seconds}") long refreshTtlSeconds,
+            @Value("${security.jwt.access-ttl-seconds}") long accessTtlSeconds,
+            @Value("${security.jwt.refresh-ttl-seconds}") long refreshTtlSeconds,
             @Value("${security.jwt.issuer}") String issuer
     ) {
         if (secret == null || secret.length() < 64) {
@@ -88,15 +88,14 @@ public class JwtService {
         }
     }
     public boolean isAccessToken(String token){
-        Claims c= parse(token).getPayload();
-        return "access".equals(c.get("tpy"));
+        Claims c = parse(token).getPayload();
+        return "access".equals(c.get("typ"));
     }
 
     public boolean isRefreshToken(String token){
-        Claims c= parse(token).getPayload();
-        return "access".equals(c.get("tpy"));
+        Claims c = parse(token).getPayload();
+        return "refresh".equals(c.get("typ"));
     }
-
     public UUID getUserId(String token) {
         Claims c = parse(token).getPayload();
         return UUID.fromString(c.getSubject());
@@ -108,7 +107,7 @@ public class JwtService {
 
     public List<String> getRoles(String token) {
         Claims c = parse(token).getPayload();
-        return (List<String >) c.get("coles");
+        return (List<String>) c.get("roles");
     }
 
         public String getEmail(String token) {

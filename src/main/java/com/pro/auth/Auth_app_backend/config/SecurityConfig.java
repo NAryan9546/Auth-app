@@ -30,13 +30,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf ( AbstractHttpConfigurer::disable )
-                .cors ( Customizer.withDefaults ( ) )
-                .sessionManagement ( sm -> sm.sessionCreationPolicy ( SessionCreationPolicy.STATELESS ) )
-                .authorizeHttpRequests ( authorizeHttpRequests ->
-                        authorizeHttpRequests.requestMatchers ( "/api/v1/auth/register" ).permitAll ( )
-                                .requestMatchers ( "/api/v1/auth/login" ).permitAll ( )
-                                .anyRequest ( ).authenticated ( )
+        http.csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        // Add /api/v1/auth/refresh to the permitAll list
+                        .requestMatchers(
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/register",
+                                "/api/v1/auth/refresh",
+                                "/error"
+                        ).permitAll()
+                        .anyRequest().authenticated()
                 )
 
                 .exceptionHandling(configurer -> configurer.authenticationEntryPoint((request, response, e) -> {
