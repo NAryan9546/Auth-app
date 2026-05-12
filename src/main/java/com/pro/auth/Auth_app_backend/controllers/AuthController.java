@@ -145,14 +145,17 @@ public class AuthController {
     private Optional<String> readRefreshTokenFromRequest(RefreshTokenRequest body, HttpServletRequest request) {
         if (request.getCookies() != null) {
             Optional<String> fromCookie = Arrays.stream(request.getCookies())
-                    .filter(c -> cookieService.getRefreshTokenCookieName().equals(c.getName()))
+                    .filter(c -> "refreshToken".equals(c.getName()))
                     .map(Cookie::getValue)
                     .findFirst();
-            if (fromCookie.isPresent()) return fromCookie;
-        }
 
-        if (body != null && body.refreshToken() != null && !body.refreshToken().isBlank()) {
-            return Optional.of(body.refreshToken());
+            if (fromCookie.isPresent()) {
+                return fromCookie;
+            }
+
+            if (body != null && body.refreshToken() != null && !body.refreshToken().isBlank()) {
+                return Optional.of(body.refreshToken());
+            }
         }
 
         String refreshHeader = request.getHeader("X-Refresh-Token");

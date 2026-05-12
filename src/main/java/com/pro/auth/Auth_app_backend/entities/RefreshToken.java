@@ -22,6 +22,7 @@ public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", columnDefinition = "BINARY(16)", updatable = false, nullable = false)
     private UUID id;
 
     @Column(name="jti",unique = true,nullable = false,updatable = false)
