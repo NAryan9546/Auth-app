@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,6 +44,13 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+                .oauth2Login( OAuth2LoginConfigurer<HttpSecurity> Oauth2 ->
+                        oauth2.successHandler(null)
+                                .failureHandler(null)
+                )
+                .logout(AbstractHttpConfigurer::disable)
+
+
 
                 .exceptionHandling(configurer -> configurer.authenticationEntryPoint((request, response, e) -> {
                     //Error Message
