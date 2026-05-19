@@ -16,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import tools.jackson.databind.ObjectMapper;
 
@@ -24,9 +25,14 @@ import tools.jackson.databind.ObjectMapper;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private  JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    private  JwtAuthenticationFilter jwtAuthenticationFilter;
+    private AuthenticationSuccessHandler successHandler;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationSuccessHandler successHandler) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.successHandler = successHandler;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,8 +50,8 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2Login( OAuth2LoginConfigurer<HttpSecurity> Oauth2 ->
-                        oauth2.successHandler(null)
+                .oauth2Login(  oauth2 ->
+                        oauth2.successHandler(successHandler)
                                 .failureHandler(null)
                 )
                 .logout(AbstractHttpConfigurer::disable)
